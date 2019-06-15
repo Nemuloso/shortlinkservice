@@ -1,0 +1,30 @@
+{
+  "name": "shortlinkservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nemuloso/shortlinkservice.git"
+  },
+  "keywords": [
+    "shortlink",
+    "linkshortener",
+    "javascript",
+    "node",
+    "mongodb"
+  ],
+  "author": "Stefan Hermes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nemuloso/shortlinkservice/issues"
+  },
+  "homepage": "https://github.com/Nemuloso/shortlinkservice#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
