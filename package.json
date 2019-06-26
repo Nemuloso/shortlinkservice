@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/Nemuloso/shortlinkservice#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongodb": "^3.2.7",
+    "monk": "^7.0.0"
   }
 }
