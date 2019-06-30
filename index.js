@@ -1,3 +1,6 @@
+const url = require('url');
+const uuidv4 = require('uuid/v4');
+
 const express = require("express");
 const app = express();
 
@@ -17,22 +20,29 @@ app.use(function (req, res, next) {
 
 app.get("/shorturl", function (req, res) {
     const db = req.db;
-
-    const shortURL = generateShortUrl();
-
     const collection = db.get("urls");
+    
+    const shortURLid = uuidv4(); // get Guid based on timestamp
+    const urlParts = url.parse(req.url, true);
+    const query = urlParts.query;
 
-    collection.insert({
-        "shorturl": shortURL,
-        "longurl": userEmail
-    }, function (err, doc) {
+    const entry = {
+        "shorturl": shortURLid,
+        "longurl": JSON.stringify(query)
+    };
+
+    console.log(entry);
+
+    collection.insert(
+        entry,
+        function (err, doc) {
         if (err) {
             res.send("There was a problem adding the information to the database.");
         }
         else {
-            res.send({
-                "shorturl": shortURL
-            });
+            // res.send({
+            //     "shorturl": shortURL
+            // });
         }
     });
 });
