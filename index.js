@@ -4,8 +4,21 @@ const uuidv4 = require('uuid/v4');
 const express = require("express");
 const app = express();
 
+const dockerIp = "192.168.99.100";
+const mongoPort = "27017";
+const dbName = "shortlinkdb";
+
 const monk = require("monk");
-const db = monk("localhost:27017/shortlinkdb");
+const db = monk(dockerIp+":"+mongoPort+"/"+dbName);
+
+db.then(() => {
+    console.log('Connected correctly to server')
+});
+
+app.use(function (req, res, next) {
+    req.db = db;
+    next();
+});
 
 app.use(express.static(__dirname + "/styles"));
 
@@ -13,15 +26,20 @@ app.get("/test", function (req, res) {
     res.sendFile(__dirname + "/test.html");
 })
 
-app.use(function (req, res, next) {
-    req.db = db;
-    next();
+/* Test db connection... Should respond {"testentry":"testvalue"} */
+app.get('/testdb', function (req, res) {
+    var db = req.db;
+    var collection = db.get('urls');
+    collection.find({}, {}, function (e, docs) {
+        console.log(docs)
+        res.send(JSON.stringify(docs));
+    });
 });
 
 app.get("/shorturl", function (req, res) {
     const db = req.db;
     const collection = db.get("urls");
-    
+
     const shortURLid = uuidv4(); // get Guid based on timestamp
     const urlParts = url.parse(req.url, true);
     const query = urlParts.query;
@@ -30,8 +48,6 @@ app.get("/shorturl", function (req, res) {
         "shorturl": shortURLid,
         "longurl": JSON.stringify(query)
     };
-
-    console.log(entry);
 
     collection.insert(
         entry,
